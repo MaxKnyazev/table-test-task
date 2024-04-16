@@ -8,11 +8,61 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <h1 id="h1">Start</h1>
+  <main class="main">
 
+    <section class="sort-and-search">
+      <h1>Пользователи:</h1>
+      <form class="sort-and-search__form">
+        <div class="sort-and-search__form-group">
+          <label for="sort-and-search__form-sort">Sort by:</label>
+          <select id="sort-and-search__form-sort">
+            <option value="name">Name</option>
+            <option value="age">Age</option>
+          </select>
+        </div>
+        <div class="sort-and-search__form-group">
+          <label for="sort-and-search__form-search">Search by:</label>
+          <input id="sort-and-search__form-search" type="text">
+        </div>
+      </form>
+    </section>
 
+    <section class="main-table">
+      <h1>Table</h1>
+      <table class="table">
+        <thead class="table__header">
+          <tr class="table__row">
+            <th class="table__cell table__cell--header">Заголовок 1</th>
+            <th class="table__cell table__cell--header">Заголовок 2</th>
+            <th class="table__cell table__cell--header">Заголовок 3</th>
+            <th class="table__cell table__cell--header">Заголовок 4</th>
+            <th class="table__cell table__cell--header">Заголовок 5</th>
+          </tr>
+        </thead>
+        <tbody class="table__body">
+          <tr class="table__row">
+            <td class="table__cell">Ячейка 1</td>
+            <td class="table__cell">Ячейка 2</td>
+            <td class="table__cell">Ячейка 3</td>
+            <td class="table__cell">Ячейка 4</td>
+            <td class="table__cell">Ячейка 5</td>
+          </tr>
+          <tr class="table__row">
+            <td class="table__cell">Ячейка 6</td>
+            <td class="table__cell">Ячейка 7</td>
+            <td class="table__cell">Ячейка 8</td>
+            <td class="table__cell">Ячейка 9</td>
+            <td class="table__cell">Ячейка 10</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
 
+    <section class="pagination">
+      <h1>Pagination</h1>
+    </section>
 
+  </main>
 
   <script src="index.js"></script>
 </body>
