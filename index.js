@@ -5,14 +5,15 @@ document.addEventListener('DOMContentLoaded', async() => {
   const LIMIT = 100;
   const SELECT = 'username,age,gender,email,phone,address';
   const URL_FAKE_API = `https://dummyjson.com/users?limit=${LIMIT}&select=${SELECT}`;
+  const ITEMS_PER_PAGE = 10;
+  let paginationContainer = null;
   let users = [];
+  let filteredUsers = [];
   let table = document.getElementById('table');
   let tableBody = document.getElementById('table__body');
-  let pageState = 0;
+  let searchInput = document.getElementById('sort-and-search__form-search');
+  let totalPages = 0;
 
-  const content = document.querySelector('.content');
-  const itemsPerPage = 1;
-  const items = Array.from(content.getElementsByTagName('tr')).slice(1);
   let currentPage = 0;
 
   const firstDotsSpan = document.createElement('span');
@@ -23,15 +24,12 @@ document.addEventListener('DOMContentLoaded', async() => {
   lastDotsSpan.classList.add('pagination__span');
   lastDotsSpan.textContent = '...';
 
-
-
   //================================================================================ FUNCTIONS
   //------------------------------------------------------------------ log
   const log = console.log;
 
   //------------------------------------------------------------------ generateTableRow
   const generateTableRow = (user) => {
-    // username,gender,email,phone,city, status (age <= 30)
     const tableRow = document.createElement('tr');
     const username = document.createElement('td');
     username.textContent = user.username;
@@ -57,22 +55,13 @@ document.addEventListener('DOMContentLoaded', async() => {
   //------------------------------------------------------------------ renderTablePage
   const renderTablePage = (arr, firstIndex, lastIndex) => {
     tableBody.remove();
-    tableBody = document.createElement('tbody');
 
+    tableBody = document.createElement('tbody');
     for (let i = firstIndex; i <= lastIndex; i++) {
       tableBody.appendChild(generateTableRow(arr[i]))
     }
     log(tableBody)
     table.appendChild(tableBody)
-  }
-
-  const showPage = page => {
-    const startIndex = page * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
-    items.forEach((item, index) => {
-      item.classList.toggle('hidden', index < startIndex || index >= endIndex);
-    });
-    updateActiveButtonStates();
   }
 
   const createPageButton = (text, styles, clickHandler) => {
@@ -83,12 +72,18 @@ document.addEventListener('DOMContentLoaded', async() => {
     return pageButton;
   }
 
-  const defaultPageButtonHandler = (pos, pagination) => {
-    pagination.remove();
+  const defaultPageButtonHandler = (pos) => {
+    paginationContainer.remove();
     currentPage = pos;
-    showPage(currentPage);
+    const firstIndex = currentPage * ITEMS_PER_PAGE;
+    let lastIndex = 0;
+    if (currentPage === totalPages - 1) {
+      lastIndex = filteredUsers.length - 1;
+    } else {
+      lastIndex = firstIndex + 9;
+    }
+    renderTablePage(filteredUsers, firstIndex, lastIndex);
     displayPageButtons();
-    updateActiveButtonStates();
   };
 
 
@@ -100,6 +95,8 @@ document.addEventListener('DOMContentLoaded', async() => {
       // получаем тело ответа (см. про этот метод ниже)
       result = await response.json();
       users = result.users;
+      filteredUsers = [...users];
+      totalPages = Math.ceil(filteredUsers.length / ITEMS_PER_PAGE);
     } else {
       log("Ошибка HTTP: " + response.status);
     }
@@ -109,20 +106,46 @@ document.addEventListener('DOMContentLoaded', async() => {
 
   log('users = ',users)
 
-//******************************************  Проверка рендера постранично  */
-  renderTablePage(users, pageState * 10, pageState * 10 + 9);
-  setTimeout(() => {pageState = 1;renderTablePage(users, pageState * 10, pageState * 10 + 9)}, 2000)
-  setTimeout(() => {pageState = 2;renderTablePage(users, pageState * 10, pageState * 10 + 9)}, 4000)
-  setTimeout(() => {pageState = 3;renderTablePage(users, pageState * 10, pageState * 10 + 9)}, 6000)
+  renderTablePage(filteredUsers, currentPage * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE + ITEMS_PER_PAGE - 1);
 
+  // +++ Функция для поиска данных
+  const searchData = (pagination) => {
+    paginationContainer.remove();
+    const searchTerm = searchInput.value.toLowerCase();
 
+    if (searchTerm === '') {
+      filteredUsers = [...users];
+    }
 
+    filteredUsers = users.filter(item => {
+      return Object.values(item).some(value => String(value).toLowerCase().includes(searchTerm));
+    });
 
+    if (filteredUsers.length) {
+      currentPage = 0;
+      totalPages = Math.ceil(filteredUsers.length / ITEMS_PER_PAGE);;
+      const firstIndex = currentPage * ITEMS_PER_PAGE;
+      let lastIndex = 0;
+      if (currentPage === totalPages - 1) {
+        lastIndex = filteredUsers.length - 1;
+      } else {
+        lastIndex = firstIndex + 9;
+      }
+      log(`firstIndex ${firstIndex}`)
+      log(`lastIndex ${lastIndex}`)
+      log(`filteredUsers.length ${filteredUsers.length}`)
+  
+      renderTablePage(filteredUsers, firstIndex, lastIndex);
+      displayPageButtons();
+    } else {
+      tableBody.remove()
+    }
+  }
 
+  searchInput.addEventListener('input', searchData);
 
   const displayPageButtons = () => {
-    const totalPages = Math.ceil(items.length / itemsPerPage);
-    const paginationContainer = document.createElement('div');
+    paginationContainer = document.createElement('div');
     const paginationDiv = document.body.appendChild(paginationContainer);
     paginationContainer.classList.add('pagination');
 
@@ -130,9 +153,10 @@ document.addEventListener('DOMContentLoaded', async() => {
       if (currentPage) {
         paginationContainer.remove()
         currentPage = currentPage - 1;
-        showPage(currentPage);
+        const firstIndex = currentPage * ITEMS_PER_PAGE;
+        const lastIndex = currentPage === totalPages - 1 ? LIMIT - 1 : currentPage * ITEMS_PER_PAGE + ITEMS_PER_PAGE - 1;
+        renderTablePage(filteredUsers, firstIndex, lastIndex);
         displayPageButtons();
-        updateActiveButtonStates();
       }
     });
     paginationDiv.appendChild(buttonPrev);
@@ -185,25 +209,20 @@ document.addEventListener('DOMContentLoaded', async() => {
       if (currentPage < totalPages - 1) {
         paginationContainer.remove();
         currentPage = currentPage + 1;
-        showPage(currentPage);
+        const firstIndex = currentPage * ITEMS_PER_PAGE;
+        const lastIndex = currentPage === totalPages - 1 ? LIMIT - 1 : currentPage * ITEMS_PER_PAGE + ITEMS_PER_PAGE - 1;
+        renderTablePage(filteredUsers, firstIndex, lastIndex);
         displayPageButtons();
-        updateActiveButtonStates();
       }
     });
     paginationDiv.appendChild(buttonNext);
+
+    updateActiveButtonStates();
   }
 
-
-
-
-
-
-
-
-  
   const updateActiveButtonStates = () => {
     const pageButtons = Array.from(document.querySelectorAll('.pagination__button')).slice(1, -1);
-    pageButtons.forEach((button, index) => {
+    pageButtons.forEach(button => {
       if (+button.textContent - 1 === currentPage) {
         button.classList.add('pagination__button--active');
       } else {
@@ -213,5 +232,4 @@ document.addEventListener('DOMContentLoaded', async() => {
   }
 
   displayPageButtons();
-  showPage(currentPage);
 });
