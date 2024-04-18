@@ -14,8 +14,8 @@ document.addEventListener('DOMContentLoaded', async() => {
   let table = document.getElementById('table');
   let tableBody = document.getElementById('table__body');
   let searchInput = document.getElementById('sort-and-search__form-search');
+  let sortSelect = document.getElementById('sort-and-search__form-sort');
   let totalPages = 0;
-
   let currentPage = 0;
 
   const firstDotsSpan = document.createElement('span');
@@ -92,7 +92,7 @@ document.addEventListener('DOMContentLoaded', async() => {
     } else {
       lastIndex = firstIndex + ITEMS_PER_PAGE - 1;
     }
-    paginationText.textContent = `Показаны данные с ${firstIndex + 1} по ${lastIndex + 1} из ${LIMIT} записей`;
+    paginationText.textContent = `Показаны данные с ${firstIndex + 1} по ${lastIndex + 1} из ${filteredUsers.length} записей`;
     renderTablePage(filteredUsers, firstIndex, lastIndex);
     displayPageButtons();
   };
@@ -120,8 +120,7 @@ document.addEventListener('DOMContentLoaded', async() => {
   renderTablePage(filteredUsers, currentPage * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE + ITEMS_PER_PAGE - 1);
   paginationText.textContent = `Показаны данные с ${1} по ${ITEMS_PER_PAGE} из ${LIMIT} записей`;
 
-  // +++ Функция для поиска данных
-  const searchData = (pagination) => {
+  const searchData = () => {
     paginationButtons.remove();
     const searchTerm = searchInput.value.toLowerCase();
 
@@ -143,15 +142,47 @@ document.addEventListener('DOMContentLoaded', async() => {
       } else {
         lastIndex = firstIndex + ITEMS_PER_PAGE - 1;
       }
-      paginationText.textContent = `Показаны данные с ${firstIndex + 1} по ${lastIndex + 1} из ${LIMIT} записей`;
+      paginationText.textContent = `Показаны данные с ${firstIndex + 1} по ${lastIndex + 1} из ${filteredUsers.length} записей`;
       renderTablePage(filteredUsers, firstIndex, lastIndex);
       displayPageButtons();
     } else {
+      paginationText.textContent = `По запросу данные не найдены`;
       tableBody.remove()
     }
   }
-
   searchInput.addEventListener('input', searchData);
+
+  const sortData = () => {
+    log(sortSelect.value)
+
+    switch (sortSelect.value) {
+      case 'name':
+        filteredUsers.sort((a, b) => 
+          a.username > b.username ? 1 : -1
+        )
+        break;
+
+      case 'active':
+        filteredUsers.sort((a, b) => a.age - b.age);
+        break;
+
+      case 'default':
+        filteredUsers = [...users];
+    }
+    
+    paginationButtons.remove();
+    const firstIndex = currentPage * ITEMS_PER_PAGE;
+    let lastIndex = 0;
+    currentPage = 0;
+    if (currentPage === totalPages - 1) {
+      lastIndex = filteredUsers.length - 1;
+    } else {
+      lastIndex = firstIndex + ITEMS_PER_PAGE - 1;
+    }
+    renderTablePage(filteredUsers, firstIndex, lastIndex);
+    displayPageButtons();
+  }
+  sortSelect.addEventListener('change', sortData);
 
   const displayPageButtons = () => {
     paginationButtons = document.createElement('div');
@@ -169,7 +200,7 @@ document.addEventListener('DOMContentLoaded', async() => {
         } else {
           lastIndex = firstIndex + ITEMS_PER_PAGE - 1;
         }
-        paginationText.textContent = `Показаны данные с ${firstIndex + 1} по ${lastIndex + 1} из ${LIMIT} записей`;
+        paginationText.textContent = `Показаны данные с ${firstIndex + 1} по ${lastIndex + 1} из ${filteredUsers.length} записей`;
         renderTablePage(filteredUsers, firstIndex, lastIndex);
         displayPageButtons();
       }
@@ -231,7 +262,7 @@ document.addEventListener('DOMContentLoaded', async() => {
         } else {
           lastIndex = firstIndex + ITEMS_PER_PAGE - 1;
         }
-        paginationText.textContent = `Показаны данные с ${firstIndex + 1} по ${lastIndex + 1} из ${LIMIT} записей`;
+        paginationText.textContent = `Показаны данные с ${firstIndex + 1} по ${lastIndex + 1} из ${filteredUsers.length} записей`;
         renderTablePage(filteredUsers, firstIndex, lastIndex);
         displayPageButtons();
       }
