@@ -18,7 +18,7 @@ body {
   display: flex;
   gap: 2vh;
   flex-direction: column;
-  padding: 4vh 3vw 4vh 3vw;
+  padding: 4vh 0vw 4vh 0vw;
   border-radius: 20px;
   min-width: 70vw;
 
@@ -30,6 +30,7 @@ body {
   justify-content: space-between;
   align-items: center;
   width: 100%;
+  padding: 0 3vw 0 3vw;
 
   &__title {
     font-size: 22px;
@@ -129,12 +130,26 @@ body {
     grid-template-columns: 0.8fr 0.7fr 2fr 1fr 1fr 0.5fr;
     padding: 1.5vh 0 1.5vh 0;
     border-bottom: 1px solid $table-border-color;
+    margin: 0 3vw 0 3vw;
+  }
+
+  &__row--first {
+    text-align: left;
+    display: grid;
+    grid-template-columns: 0.8fr 0.6fr 1.5fr 0.8fr 0.8fr 0.7fr;
+    padding: 1.5vh 0 1.5vh 0;
+    border-bottom: 1px solid $table-border-color;
+    margin: 0;
   }
 
   &__cell {
     &--body {
       display: flex;
       align-items: center;
+    }
+
+    &--first {
+      margin-left: 3vw;
     }
 
     &--active {
@@ -163,6 +178,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin: 0 3vw 0 3vw;
 
   &__text {
     color: $main-light-color;
