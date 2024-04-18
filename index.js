@@ -1,7 +1,4 @@
 document.addEventListener('DOMContentLoaded', async() => {
-  // console.log('DOMContentLoaded');
-
-  //================================================================================ CONSTANS
   const LIMIT = 100;
   const SELECT = 'username,age,gender,email,phone,address';
   const URL_FAKE_API = `https://dummyjson.com/users?limit=${LIMIT}&select=${SELECT}`;
@@ -26,11 +23,6 @@ document.addEventListener('DOMContentLoaded', async() => {
   lastDotsSpan.classList.add('pagination__span');
   lastDotsSpan.textContent = '...';
 
-  //================================================================================ FUNCTIONS
-  //------------------------------------------------------------------ log
-  const log = console.log;
-
-  //------------------------------------------------------------------ generateTableRow
   const generateTableRow = (user) => {
     const tableRow = document.createElement('tr');
     tableRow.classList = 'table__row';
@@ -61,16 +53,13 @@ document.addEventListener('DOMContentLoaded', async() => {
     return tableRow;
   }
 
-  //------------------------------------------------------------------ renderTablePage
   const renderTablePage = (arr, firstIndex, lastIndex) => {
     tableBody.remove();
-
     tableBody = document.createElement('tbody');
     tableBody.classList = 'table__body';
     for (let i = firstIndex; i <= lastIndex; i++) {
       tableBody.appendChild(generateTableRow(arr[i]))
     }
-    log(tableBody)
     table.appendChild(tableBody)
   }
 
@@ -97,41 +86,31 @@ document.addEventListener('DOMContentLoaded', async() => {
     displayPageButtons();
   };
 
-
-  //-------------------------------------------------------------------------- MAIN
   try {
     let response = await fetch(URL_FAKE_API);
-    // если HTTP-статус в диапазоне 200-299
     if (response.ok) { 
-      // получаем тело ответа (см. про этот метод ниже)
       result = await response.json();
       users = result.users;
       filteredUsers = [...users];
       totalPages = Math.ceil(filteredUsers.length / ITEMS_PER_PAGE);
     } else {
-      log("Ошибка HTTP: " + response.status);
+      console.log("Ошибка HTTP: " + response.status);
     }
   } catch (error) {
-    log('ERROR: ', error)
+    console.log('ERROR: ', error)
   }
-
-  log('users = ',users)
-
   renderTablePage(filteredUsers, currentPage * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE + ITEMS_PER_PAGE - 1);
   paginationText.textContent = `Показаны данные с ${1} по ${ITEMS_PER_PAGE} из ${LIMIT} записей`;
 
   const searchData = () => {
     paginationButtons.remove();
     const searchTerm = searchInput.value.toLowerCase();
-
     if (searchTerm === '') {
       filteredUsers = [...users];
     }
-
     filteredUsers = users.filter(item => {
       return Object.values(item).some(value => String(value).toLowerCase().includes(searchTerm));
     });
-
     if (filteredUsers.length) {
       currentPage = 0;
       totalPages = Math.ceil(filteredUsers.length / ITEMS_PER_PAGE);;
@@ -153,8 +132,6 @@ document.addEventListener('DOMContentLoaded', async() => {
   searchInput.addEventListener('input', searchData);
 
   const sortData = () => {
-    log(sortSelect.value)
-
     switch (sortSelect.value) {
       case 'name':
         filteredUsers.sort((a, b) => 
@@ -169,7 +146,6 @@ document.addEventListener('DOMContentLoaded', async() => {
       case 'default':
         filteredUsers = [...users];
     }
-    
     paginationButtons.remove();
     const firstIndex = currentPage * ITEMS_PER_PAGE;
     let lastIndex = 0;
