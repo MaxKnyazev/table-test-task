@@ -170,9 +170,9 @@ body {
   text-align: left;
   display: -ms-grid;
   display: grid;
-  -ms-grid-columns: 0.8fr 0.6fr 1.5fr 0.8fr 0.8fr 0.7fr;
-      grid-template-columns: 0.8fr 0.6fr 1.5fr 0.8fr 0.8fr 0.7fr;
-  padding: 1.5vh 0 1.5vh 0;
+  -ms-grid-columns: 0.8fr 0.7fr 2fr 1fr 1fr 0.5fr;
+      grid-template-columns: 0.8fr 0.7fr 2fr 1fr 1fr 0.5fr;
+  padding: 1.5vh 3vw 1.5vh 3vw;
   border-bottom: 1px solid #EEEEEE;
   margin: 0;
 }
@@ -184,10 +184,6 @@ body {
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
-}
-
-.table__cell--first {
-  margin-left: 3vw;
 }
 
 .table__cell--active {
