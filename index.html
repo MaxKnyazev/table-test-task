@@ -6,29 +6,37 @@
   <title>Table Test Task</title>
   <link rel="stylesheet" href="normalize.css">
   <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Gothic+A1&display=swap" rel="stylesheet">
 </head>
 <body>
   <main class="main">
 
     <section class="sort-and-search">
-      <h1>Все пользователи</h1>
+      <h1 class="sort-and-search__title">Все пользователи</h1>
       <form class="sort-and-search__form">
-        <div class="sort-and-search__form-group">
-          <label for="sort-and-search__form-sort">Sort by:</label>
-          <select id="sort-and-search__form-sort">
-            <option value="name">Name</option>
-            <option value="age">Age</option>
-          </select>
+        <div class="sort-and-search__form-group sort-and-search__form-group--search">
+          <label for="sort-and-search__form-search">
+            <svg class="sort-and-search__svg" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M9 17C13.4183 17 17 13.4183 17 9C17 4.58172 13.4183 1 9 1C4.58172 1 1 4.58172 1 9C1 13.4183 4.58172 17 9 17Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M19 19L14.65 14.65" stroke="#7E7E7E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>              
+          </label>
+          <input id="sort-and-search__form-search" type="text" placeholder="Поиск">
         </div>
-        <div class="sort-and-search__form-group">
-          <label for="sort-and-search__form-search">Search by:</label>
-          <input id="sort-and-search__form-search" type="text">
+
+        <div class="sort-and-search__form-group sort-and-search__form-group--sort">
+          <label for="sort-and-search__form-sort">Sort by :</label>
+          <select id="sort-and-search__form-sort">
+            <option value="name">Имя</option>
+            <option value="age">Возраст</option>
+          </select>
         </div>
       </form>
     </section>
 
     <section class="main-table">
-      <h1>Table</h1>
       <table id="table" class="table">
         <thead class="table__header">
           <tr class="table__row">
@@ -43,6 +51,10 @@
         <tbody id="table__body" class="table__body">
         </tbody>
       </table>
+    </section>
+
+    <section class="pagination">
+      <div class="pagination__text"></div>
     </section>
   </main>
 
